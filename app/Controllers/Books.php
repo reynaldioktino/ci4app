@@ -26,7 +26,8 @@ class Books extends BaseController
     public function add()
     {
         $data = [
-            'title' =>  'Form Add Book'
+            'title' =>  'Form Add Book',
+            'validation'    =>  \Config\Services::validation()
         ];
 
         return view('books/add', $data);
@@ -34,6 +35,21 @@ class Books extends BaseController
 
     public function insert()
     {
+        //input validation
+        if (!$this->validate([
+            'title' =>  [
+                'rules' =>  'required|is_unique[books.title]',
+                'errors'    =>  [
+                    'required'  =>  '{field} is required.',
+                    'is_unique' =>  'Book title already use.'
+                ]
+            ]
+        ])) {
+            $validation = \Config\Services::validation();
+
+            return redirect()->to('/books/add')->withInput()->with('validation', $validation);
+        }
+
         $slug = url_title($this->request->getVar('title'), '-', true);
         $this->booksModel->save([
             'title' =>  $this->request->getVar('title'),
