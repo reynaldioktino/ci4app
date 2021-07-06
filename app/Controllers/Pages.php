@@ -16,7 +16,7 @@ class Pages extends BaseController
     public function about()
     {
         $data = [
-            'title' =>  'About Us'
+            'title' =>  'About'
         ];
         return view('pages/about', $data);
     }
@@ -24,7 +24,7 @@ class Pages extends BaseController
     public function contact()
     {
         $data = [
-            'title' =>  'Contact Us'
+            'title' =>  'Contact'
         ];
         return view('pages/contact', $data);
     }
