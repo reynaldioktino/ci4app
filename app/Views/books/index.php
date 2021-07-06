@@ -5,7 +5,13 @@
     <div class="row">
         <div class="col">
             <br>
-            <h1>Daftar Buku</h1>
+            <h1>Daftar Buku</h1><br>
+            <a href="/books/add" class="btn btn-success">+ Add Books</a><br><br>
+            <?php if (session()->getFlashdata('message')) : ?>
+                <div class="alert alert-success" role="alert">
+                    <?= session()->getFlashdata('message'); ?>
+                </div>
+            <?php endif; ?>
             <table class="table">
                 <thead>
                     <tr>
@@ -16,14 +22,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($books as $value) : ?>
+                    <?php $i = 1;
+                    foreach ($books as $value) : ?>
                         <tr>
-                            <th scope="row">1</th>
+                            <th scope="row"><?= $i; ?></th>
                             <td><img src="/image/<?= $value['cover']; ?>" alt="" class="sampul"></td>
                             <td><?= $value['title']; ?></td>
-                            <td><a href="/books/<?= $value['slug']; ?>" class="btn btn-primary">Details</a></td>
+                            <td><a href="/book/<?= $value['slug']; ?>" class="btn btn-primary">Details</a></td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php $i++;
+                    endforeach; ?>
                 </tbody>
             </table>
         </div>
