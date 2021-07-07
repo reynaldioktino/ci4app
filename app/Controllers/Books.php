@@ -79,4 +79,43 @@ class Books extends BaseController
 
         return view('books/detail', $data);
     }
+
+    public function edit($id_books)
+    {
+        $data = [
+            'title' =>  'Edit Books',
+            'book'  =>  $this->booksModel->getBooksId($id_books),
+            'validation'    =>  \Config\Services::validation()
+        ];
+
+        return view('books/update', $data);
+    }
+
+    public function update()
+    {
+        $id_books = $this->request->getVar('id_books');
+        $slug = url_title($this->request->getVar('title'), '-', true);
+        $book_data = [
+            'title' =>  $this->request->getVar('title'),
+            'slug' =>  $slug,
+            'writer' =>  $this->request->getVar('writer'),
+            'publiser' =>  $this->request->getVar('publiser'),
+            'cover' =>  $this->request->getVar('cover'),
+        ];
+
+        $this->booksModel->update($id_books, $book_data);
+
+        session()->setFlashdata('message', 'Update Data Success!');
+
+        return redirect()->to('/books');
+    }
+
+    public function delete($id_books)
+    {
+        $this->booksModel->delete($id_books);
+
+        session()->setFlashdata('message', 'Delete Data Success!');
+
+        return redirect()->to('/books');
+    }
 }

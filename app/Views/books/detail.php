@@ -16,8 +16,8 @@
                             <hr>
                             <p class="card-text"><b>Penulis : </b><?= $book['writer']; ?></p>
                             <p class="card-text"><b>Penerbit : </b><small class="text-muted"><?= $book['publiser']; ?></small></p>
-                            <a href="" class="btn btn-warning btn-sm">Update</a>
-                            <a href="" class="btn btn-danger btn-sm">Delete</a>
+                            <a href="/books/edit/<?= $book['id_books']; ?>" class="btn btn-warning btn-sm">Update</a>
+                            <a href="/books/delete/<?= $book['id_books']; ?>" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">Delete</a>
                         </div>
                     </div>
                 </div>

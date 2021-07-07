@@ -26,7 +26,7 @@
                     <label for="exampleInputEmail1" class="form-label">Book Cover</label>
                     <input type="text" class="form-control" name="cover" value="<?= old('cover'); ?>">
                 </div>
-                <button type=" submit" class="btn btn-primary">+ Add Data</button>
+                <button type="submit" class="btn btn-success">+ Add Data</button>
             </form>
         </div>
     </div>
