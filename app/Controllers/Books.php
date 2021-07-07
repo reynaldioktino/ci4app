@@ -80,11 +80,11 @@ class Books extends BaseController
         return view('books/detail', $data);
     }
 
-    public function edit($id_books)
+    public function edit($slug)
     {
         $data = [
             'title' =>  'Edit Books',
-            'book'  =>  $this->booksModel->getBooksId($id_books),
+            'book'  =>  $this->booksModel->getBooks($slug),
             'validation'    =>  \Config\Services::validation()
         ];
 
@@ -93,11 +93,37 @@ class Books extends BaseController
 
     public function update()
     {
+        $title = $this->request->getVar('title');
+        $slug = $this->request->getVar('slug');
+
+        $books = $this->booksModel->getBooks($slug);
+
+        if ($title == $books['title']) {
+            $validation_title = 'required';
+        } else {
+            $validation_title = 'required|is_unique[books.title]';
+        }
+
+        //input validation
+        if (!$this->validate([
+            'title' =>  [
+                'rules' =>  $validation_title,
+                'errors'    =>  [
+                    'required'  =>  '{field} is required.',
+                    'is_unique' =>  'Book title already use.'
+                ]
+            ]
+        ])) {
+            $validation = \Config\Services::validation();
+
+            return redirect()->to('/books/edit/' . $books['slug'])->withInput()->with('validation', $validation);
+        }
+
+        $new_slug = url_title($title, '-', true);
         $id_books = $this->request->getVar('id_books');
-        $slug = url_title($this->request->getVar('title'), '-', true);
         $book_data = [
-            'title' =>  $this->request->getVar('title'),
-            'slug' =>  $slug,
+            'title' =>  $title,
+            'slug' =>  $new_slug,
             'writer' =>  $this->request->getVar('writer'),
             'publiser' =>  $this->request->getVar('publiser'),
             'cover' =>  $this->request->getVar('cover'),

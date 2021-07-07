@@ -19,8 +19,4 @@ class BooksModel extends Model
 
         return $this->where(['slug' => $slug])->first();
     }
-    public function getBooksId($id_books)
-    {
-        return $this->where(['id_books' => $id_books])->first();
-    }
 }
