@@ -20,7 +20,7 @@
                             <form action="/book/<?= $book['id_books']; ?>" method="POST" class="d-inline">
                                 <?php csrf_field(); ?>
                                 <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('are you sure?');">Delete</button>
                             </form>
                         </div>
                     </div>

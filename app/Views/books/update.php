@@ -25,9 +25,14 @@
                     <input type="text" class="form-control" name="publiser" value="<?= (old('publiser')) ? old('publiser') : $book['publiser']; ?>">
                 </div>
                 <div class=" mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Book Cover</label><br>
-                    <img src="/image/<?= $book['cover']; ?>" alt="" class="sampul">
-                    <input type="text" class="form-control" name="cover" value="<?= (old('cover')) ? old('cover') : $book['cover']; ?>">
+                    <label class="form-label">Book Cover</label>
+                    <div class="col-sm-2">
+                        <img src="/image/<?= $book['cover']; ?>" alt="" width="220px" class="img-preview">
+                    </div>
+                    <input type="file" id="cover" name="cover" class="form-control <?= ($validation->hasError('cover')) ? 'is-invalid' : ''; ?>" onchange="previewImg()">
+                    <div id="validationServer03Feedback" class="invalid-feedback">
+                        <?= $validation->getError('cover'); ?>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Update Data</button>
             </form>

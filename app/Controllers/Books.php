@@ -43,11 +43,34 @@ class Books extends BaseController
                     'required'  =>  '{field} is required.',
                     'is_unique' =>  'Book title already use.'
                 ]
+            ],
+            'cover' =>  [
+                //'rules' =>  'uploaded[cover]|max_size[cover,1024]|is_image[cover]|mime_in[cover, image/jpg,image/jpeg,image/png]',
+                'rules' =>  'max_size[cover,1024]|is_image[cover]|mime_in[cover, image/jpg,image/jpeg,image/png]',
+                'errors'    =>  [
+                    //'uploaded'  =>  'Choose image first.',
+                    'max_size'  =>  'Your image is too big.',
+                    'is_image'  =>  'Your file is not image.',
+                    'mime_in'   =>  'Your file is not image.'
+                ]
             ]
         ])) {
-            $validation = \Config\Services::validation();
+            //$validation = \Config\Services::validation();
 
-            return redirect()->to('/books/add')->withInput()->with('validation', $validation);
+            return redirect()->to('/books/add')->withInput();
+        }
+
+        //get cover
+        $coverFile = $this->request->getFile('cover');
+
+        if ($coverFile->getError() == 4) {
+            $coverName = 'default.jpg';
+        } else {
+            //get cover file name (randomname)
+            $coverName = $coverFile->getRandomName();
+
+            //move cover to image folder
+            $coverFile->move('image', $coverName);
         }
 
         $slug = url_title($this->request->getVar('title'), '-', true);
@@ -56,7 +79,7 @@ class Books extends BaseController
             'slug' =>  $slug,
             'writer' =>  $this->request->getVar('writer'),
             'publiser' =>  $this->request->getVar('publiser'),
-            'cover' =>  $this->request->getVar('cover'),
+            'cover' =>  $coverName,
         ]);
 
         session()->setFlashdata('message', 'Insert Data Success!');
@@ -116,7 +139,8 @@ class Books extends BaseController
         ])) {
             $validation = \Config\Services::validation();
 
-            return redirect()->to('/books/edit/' . $books['slug'])->withInput()->with('validation', $validation);
+            //return redirect()->to('/books/edit/' . $books['slug'])->withInput()->with('validation', $validation);
+            return redirect()->to('/books/edit/' . $books['slug'])->withInput();
         }
 
         $new_slug = url_title($title, '-', true);
@@ -138,6 +162,14 @@ class Books extends BaseController
 
     public function delete($id_books)
     {
+        //get cover by id
+        $book = $this->booksModel->find($id_books);
+
+        if ($book['cover'] != 'default.jpg') {
+            // delete cover
+            unlink('image/' . $book['cover']);
+        }
+
         $this->booksModel->delete($id_books);
 
         session()->setFlashdata('message', 'Delete Data Success!');
