@@ -5,9 +5,10 @@
     <div class="row">
         <div class="col-6">
             <h3 class="my-3">Form Update Books</h3>
-            <form action="/books/update" method="POST">
+            <form action="/books/update" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="slug" value="<?= $book['slug']; ?>">
                 <input type="hidden" name="id_books" value="<?= $book['id_books']; ?>">
+                <input type="hidden" name="oldCover" value="<?= $book['cover']; ?>">
                 <?php csrf_field(); ?>
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Book Title</label>

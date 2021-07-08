@@ -135,12 +135,37 @@ class Books extends BaseController
                     'required'  =>  '{field} is required.',
                     'is_unique' =>  'Book title already use.'
                 ]
+            ],
+            'cover' =>  [
+                //'rules' =>  'uploaded[cover]|max_size[cover,1024]|is_image[cover]|mime_in[cover, image/jpg,image/jpeg,image/png]',
+                'rules' =>  'max_size[cover,1024]|is_image[cover]|mime_in[cover, image/jpg,image/jpeg,image/png]',
+                'errors'    =>  [
+                    //'uploaded'  =>  'Choose image first.',
+                    'max_size'  =>  'Your image is too big.',
+                    'is_image'  =>  'Your file is not image.',
+                    'mime_in'   =>  'Your file is not image.'
+                ]
             ]
         ])) {
             $validation = \Config\Services::validation();
 
             //return redirect()->to('/books/edit/' . $books['slug'])->withInput()->with('validation', $validation);
             return redirect()->to('/books/edit/' . $books['slug'])->withInput();
+        }
+
+        //get cover
+        $coverFile = $this->request->getFile('cover');
+        if ($coverFile->getError() == 4) {
+            $coverName = $this->request->getVar('oldCover');
+        } else {
+            //get cover file name (randomname)
+            $coverName = $coverFile->getRandomName();
+
+            //move cover to image folder
+            $coverFile->move('image', $coverName);
+            if ($coverName != 'default.jpg') {
+                unlink('image/' . $this->request->getVar('oldCover'));
+            }
         }
 
         $new_slug = url_title($title, '-', true);
@@ -150,7 +175,7 @@ class Books extends BaseController
             'slug' =>  $new_slug,
             'writer' =>  $this->request->getVar('writer'),
             'publiser' =>  $this->request->getVar('publiser'),
-            'cover' =>  $this->request->getVar('cover'),
+            'cover' =>  $coverName,
         ];
 
         $this->booksModel->update($id_books, $book_data);
